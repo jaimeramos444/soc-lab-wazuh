@@ -26,6 +26,37 @@ Se realizaron verificaciones de conectividad mediante tráfico ICMP (Ping) para 
 * **Kali Linux -> Windows 11:** ÉXITO (Alcance directo para simulaciones ofensivas).
 * **Windows 11 -> Wazuh Server:** ÉXITO (Envío de eventos de auditoría mediante el puerto del agente `1514/1515`).
 
-### 🛠️ Troubleshooting y Dificultades Resueltas
+###  Troubleshooting y Dificultades Resueltas
 * **Migración de despliegue SIEM:** Se inició el proyecto realizando una instalación manual de Wazuh sobre Ubuntu Server; sin embargo, tras experimentar incompatibilidades persistentes con la generación de certificados SSL y permisos de servicios, se optó por migrar a la *Virtual Appliance (OVA)* oficial. Esto garantizó la estabilidad del ecosistema e índices de Elasticsearch/OpenSearch.
 * **Aseguramiento de Endpoints:** Se ajustaron las reglas del Firewall de Windows en la máquina víctima para permitir tráfico ICMPv4 entrante únicamente desde el segmento del laboratorio, equilibrando la visibilidad de red sin exponer el equipo a interfaces externas.
+
+---
+
+## Fase 2: Despliegue del Ecosistema de Defensas (Blue Team)
+
+### 1. Objetivos del Ecosistema
+* Configurar el nodo centralizador (**Wazuh Manager**) como cerebro del SOC.
+* Desplegar sensores y agentes de auditoría en los endpoints del laboratorio (`Windows 11` y `Kali Linux`) para obtener visibilidad total de eventos.
+* Endurecer la telemetría mediante **Sysmon** (System Monitor de Sysinternals) y políticas de auditoría avanzadas en Windows.
+
+### 2. Arquitectura de Telemetría y Flujo de Datos
+* **Transmisión de Logs:** Los agentes recopilan eventos locales de seguridad y los envían cifrados al Wazuh Manager a través del puerto seguro **1515/1514**.
+* **Procesamiento e Ingesta:** El servidor decodifica los eventos recibidos, aplica reglas de correlación e indexa las alertas en **OpenSearch** para su análisis y visualización en tiempo real desde el **Wazuh Dashboard**.
+
+### 3. Estado del Clúster de Agentes
+
+| ID | Nombre del Agente | Sistema Operativo | IP | Estado | Cobertura |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **001** | `SOC-WIN11-VICTIM` | Windows 11 Pro | `10.0.2.3` | **ACTIVE** | Telemetría de Event Viewer + Sysmon |
+| **002** | `SOC-KALI-ATTACKER`| Linux (Kali 2025.4)| `10.0.2.4` | **ACTIVE** | Auditoría de procesos Linux y red |
+
+### 4. Configuración Avanzada de Telemetría (Hardening)
+
+####  Monitorización de Procesos con Microsoft Sysmon
+* **Despliegue:** Instalación y ejecución del servicio Sysmon64 en el endpoint Windows 11 (`Sysmon64.exe -i .\sysmonconfig.xml`).
+* **Filtrado Avanzado:** Aplicación de reglas de filtrado mediante la plantilla `sysmonconfig.xml` orientada a la detección de técnicas de ataque (creación de procesos anómalos, inyección de código DLL y conexiones de red sospechosas).
+* **Impacto:** Apertura de visibilidad de Nivel 1 de auditoría sobre acciones que el visor de eventos estándar de Windows no registra por defecto.
+
+####  Monitorización de Integridad de Archivos (FIM - File Integrity Monitoring)
+* **Configuración:** Personalización del bloque `<syscheck>` en el archivo de configuración del agente (`ossec.conf`).
+* **Alcance:** Definición de rutas críticas del sistema (`System32`, carpetas de inicio del sistema y registros) para monitorizar modificaciones no autorizadas de archivos en tiempo real.
