@@ -73,6 +73,7 @@ Se realizaron verificaciones de conectividad mediante tráfico ICMP (Ping) para 
   <!-- Evitar falsos positivos ignorando archivos temporales -->
   <ignore type="sregex">.tmp$</ignore>
 </syscheck>
+```
 
 ### 5. Validación y Comprobación en Vivo (Prueba de FIM)
 
