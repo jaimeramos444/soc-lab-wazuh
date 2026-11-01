@@ -58,5 +58,18 @@ Se realizaron verificaciones de conectividad mediante tráfico ICMP (Ping) para 
 * **Impacto:** Apertura de visibilidad de Nivel 1 de auditoría sobre acciones que el visor de eventos estándar de Windows no registra por defecto.
 
 ####  Monitorización de Integridad de Archivos (FIM - File Integrity Monitoring)
-* **Configuración:** Personalización del bloque `<syscheck>` en el archivo de configuración del agente (`ossec.conf`).
-* **Alcance:** Definición de rutas críticas del sistema (`System32`, carpetas de inicio del sistema y registros) para monitorizar modificaciones no autorizadas de archivos en tiempo real.
+* **Objetivo:** Implementar la detección de modificaciones no autorizadas en archivos críticos del sistema operativo para proteger el pilar de **Integridad** de la tríada CIA frente a persistencias o ejecución de scripts maliciosos.
+* **Configuración:** Personalización del bloque `<syscheck>` en el archivo `ossec.conf` del agente de Windows 11 para auditar directorios clave con una frecuencia de refresco periódica (300 segundos) y eventos en tiempo real:
+
+```xml
+<syscheck>
+  <!-- Frecuencia de escaneo periódico cada 5 minutos (en segundos) -->
+  <frequency>300</frequency>
+
+  <!-- Monitorización en TIEMPO REAL de carpetas sensibles -->
+  <directories realtime="yes" check_all="yes">C:\Windows\System32\drivers\etc</directories>
+  <directories realtime="yes" check_all="yes">C:\Users\Public</directories>
+
+  <!-- Evitar falsos positivos ignorando archivos temporales -->
+  <ignore type="sregex">.tmp$</ignore>
+</syscheck>
