@@ -73,3 +73,20 @@ Se realizaron verificaciones de conectividad mediante tráfico ICMP (Ping) para 
   <!-- Evitar falsos positivos ignorando archivos temporales -->
   <ignore type="sregex">.tmp$</ignore>
 </syscheck>
+
+### 5. Validación y Comprobación en Vivo (Prueba de FIM)
+
+Para garantizar la correcta operatividad del sistema de monitorización de integridad, se ejecutó una prueba de control simulando la creación de un archivo no autorizado en una ruta crítica vigilada (`C:\Users\Public`).
+
+* **Acción de Prueba:** Creación del archivo de control `prueba_fim.txt` en el endpoint Windows 11.
+* **Telemetría Capturada:** El agente de Wazuh detectó instantáneamente el evento en tiempo real, generando la alerta correspondiente a través del motor de Syscheck[cite: 11].
+
+> **📸 Evidencia del Dashboard (FIM - Evento Detectado):**
+> *[Inserta aquí la captura de pantalla del Wazuh Dashboard mostrando la alerta "File added to the system" con la ruta `c:\users\public\prueba_fim.txt`]*
+
+* **Análisis del Evento:**
+  * **Ruta del Archivo:** `c:\users\public\prueba_fim.txt`[cite: 11]
+  * **Tipo de Evento:** `added` (Archivo añadido al sistema)[cite: 11]
+  * **ID de Regla:** `554` (Nivel de severidad 5 - Alerta de integridad)[cite: 11]
+
+Con esta validación en caliente, el ecosistema defensivo de la Fase 2 queda completamente blindado, operativo y documentado para proceder con la simulación de amenazas del Red Team.
