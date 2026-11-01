@@ -82,8 +82,7 @@ Para garantizar la correcta operatividad del sistema de monitorización de integ
 * **Acción de Prueba:** Creación del archivo de control `prueba_fim.txt` en el endpoint Windows 11.
 * **Telemetría Capturada:** El agente de Wazuh detectó instantáneamente el evento en tiempo real, generando la alerta correspondiente a través del motor de Syscheck[cite: 11].
 
-> **📸 Evidencia del Dashboard (FIM - Evento Detectado):**
-> *[Inserta aquí la captura de pantalla del Wazuh Dashboard mostrando la alerta "File added to the system" con la ruta `c:\users\public\prueba_fim.txt`]*
+<img width="1919" height="1030" alt="image" src="https://github.com/user-attachments/assets/e8e82ab4-d010-4dad-ba81-d765165ce4de" />
 
 * **Análisis del Evento:**
   * **Ruta del Archivo:** `c:\users\public\prueba_fim.txt`[cite: 11]
